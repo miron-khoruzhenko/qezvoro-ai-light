@@ -34,9 +34,12 @@ async function load(locale: string, slug: string, fallback = "ru") {
   }
 }
 
-export default async function PrivacyPage({ params }: { params: { locale: string } }) {
-  const raw = await load(params.locale, "privacy");
-  const { content, data } = matter(raw); // frontmatter: title/description/updatedAt
+export default async function PrivacyPage(
+  { params }: { params: Promise<{ locale: string }> }   // <-- тут Promise
+) {
+  const { locale } = await params;                      // <-- достаём из промиса
+  const raw = await load(locale, "privacy");
+  const { content, data } = matter(raw);
   const toc = extractToc(content);
 
   return (
